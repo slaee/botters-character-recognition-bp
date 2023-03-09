@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterRecognitionBP", "CharacterRecognitionBP\CharacterRecognitionBP.csproj", "{1DEBEF28-7015-47B8-8807-BB3B0E86395B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1DEBEF28-7015-47B8-8807-BB3B0E86395B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DEBEF28-7015-47B8-8807-BB3B0E86395B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DEBEF28-7015-47B8-8807-BB3B0E86395B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DEBEF28-7015-47B8-8807-BB3B0E86395B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2B39AFAB-6887-41C6-A0C3-D46751AE0E81}
+	EndGlobalSection
+EndGlobal
