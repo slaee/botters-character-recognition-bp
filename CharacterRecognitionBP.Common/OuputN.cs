@@ -7,7 +7,7 @@ namespace Backprop
 		private double bias;
 		private int idno;
 		private double OActivation;
-		static System.Random rand;
+		static Random rand;
 		public ONeuron()
 		{
 			bias=this.randomBias();
@@ -63,7 +63,7 @@ namespace Backprop
 			return x;*/
 			if(rand == null)
 			{
-				rand = new System.Random();
+				rand = new Random();
 			}
                 
 			int MaxLimit = + 1000; 

@@ -8,4 +8,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CharacterRecognitionBP.Common\CharacterRecognitionBP.Common.csproj" />
+  </ItemGroup>
+
 </Project>
