@@ -1,8 +1,7 @@
-using CharacterRecognitionPerceptron.Common;
-using CharacterRecognitionPerceptron.Utils;
 using System.Drawing.Imaging;
+using CharacterRecognitionBP.Utils;
 
-namespace CharacterRecognitionPerceptron
+namespace CharacterRecognitionBP
 {
     public partial class MainForm : Form
     {
@@ -13,7 +12,6 @@ namespace CharacterRecognitionPerceptron
         Graphics _canvas;
         Pen _pen;
         Bitmap _bmp;
-        Perceptron perceptron;
 
         private Task? _trainTask;
         private CancellationTokenSource? _ctsAuto;
@@ -21,8 +19,6 @@ namespace CharacterRecognitionPerceptron
         public MainForm()
         {
             InitializeComponent();
-            perceptron = new Perceptron(225, 0.01, 1, true);
-            learningRate.Text = perceptron.LearningRate.ToString();
 
             _bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
             _canvas = Graphics.FromImage(_bmp);
@@ -96,7 +92,7 @@ namespace CharacterRecognitionPerceptron
             image.Save(ms, ImageFormat.Png);
 
             pictureBox.Image = image;
-            predictedOutput.Text = perceptron.Prediction(DIP.GetBits(ms));
+            //predictedOutput.Text = perceptron.Prediction(DIP.GetBits(ms));
         }
 
         private async Task Train(CancellationToken token)
@@ -141,9 +137,8 @@ namespace CharacterRecognitionPerceptron
 
                 // Set Perceptron Input and DesiredOutput Here
                 // ----------------------------------------
-                    perceptron.SetInput(DIP.GetBits(x));
-                    perceptron.SetDesiredOutput(y);
-                    perceptron.Learn();
+                    
+                    
                 // ----------------------------------------
 
                     pictureBox.Image = image;
@@ -151,11 +146,11 @@ namespace CharacterRecognitionPerceptron
                     canvasContainer.Image = Image.FromFile(originalImages[j]);
                 }
 
-                if (Math.Abs(perceptron.TotalError) < 0.01)
-                {
-                    _ctsAuto!.Cancel();
-                    break;
-                }
+                //if (Math.Abs(perceptron.TotalError) < 0.01)
+                //{
+                //    _ctsAuto!.Cancel();
+                //    break;
+                //}
                 
                 countEpoch++;
             }
@@ -167,7 +162,7 @@ namespace CharacterRecognitionPerceptron
 
             totalErrorLabel.Invoke(new Action(() =>
             {
-                totalErrorLabel.Text = $"Total Error: {Math.Abs(perceptron.TotalError).ToString()}";
+                //totalErrorLabel.Text = $"Total Error: {Math.Abs(perceptron.TotalError).ToString()}";
             }));
         }
 
@@ -212,12 +207,10 @@ namespace CharacterRecognitionPerceptron
         {
             double toDecimal = (double)learningRateTrackbar.Value / 1000;
             learningRate.Text = toDecimal.ToString();
-            perceptron.LearningRate = toDecimal;
         }
 
         private void resetPerceptronModel_Click(object sender, EventArgs e)
         {
-            perceptron = new Perceptron(225, double.Parse(learningRate.Text), 1, true);
             totalErrorLabel.Text = "Total Error:";
             epochsLabel.Text = $"Epochs:";
             dataSetsFeed.Items.Clear();

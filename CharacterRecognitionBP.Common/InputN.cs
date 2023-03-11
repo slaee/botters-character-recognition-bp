@@ -1,4 +1,4 @@
-namespace Backprop
+namespace CharacterRecognitionBP.Common
 {
 	public class INeuron
 	{

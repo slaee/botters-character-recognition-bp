@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace Backprop
+namespace CharacterRecognitionBP.Common
 {
 	public class NeuralNet
 	{

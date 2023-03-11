@@ -1,6 +1,6 @@
 using System;
 
-namespace Backprop
+namespace CharacterRecognitionBP.Common
 {
 	public class HNeuron
 	{

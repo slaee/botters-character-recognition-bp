@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CharacterRecognitionBP.Common\CharacterRecognitionBP.Common.csproj" />
+    <ProjectReference Include="..\CharacterRecognitionBP.Utils\CharacterRecognitionBP.Utils.csproj" />
   </ItemGroup>
 
 </Project>

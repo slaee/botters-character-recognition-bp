@@ -1,4 +1,4 @@
-﻿namespace CharacterRecognitionPerceptron
+﻿namespace CharacterRecognitionBP
 {
     partial class MainForm
     {
