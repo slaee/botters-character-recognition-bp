@@ -18,6 +18,8 @@ namespace CharacterRecognitionBP
         private Pen _pen;
         private Bitmap _bmp;
         private Graphics _canvas;
+
+        private Graphics _drawingArea;
        
 
         public MainForm(IWaiter waiter)
@@ -31,6 +33,19 @@ namespace CharacterRecognitionBP
             _canvas.Clear(Color.White);
             _pen = new Pen(Color.Black, 35);
             _pen.StartCap = _pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+
+            var bmp = new Bitmap(drawingArea.Width, drawingArea.Height);
+            _drawingArea = Graphics.FromImage(bmp);
+            _drawingArea.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            // Draw a cross line with a circle line in the middle
+            _drawingArea.DrawLine(new Pen(Color.Black, 1), new Point(0, drawingArea.Height / 2), new Point(drawingArea.Width, drawingArea.Height / 2));
+
+            _drawingArea.DrawLine(new Pen(Color.Black, 1), new Point(drawingArea.Width / 2, 0), new Point(drawingArea.Width / 2, drawingArea.Height));
+
+            _drawingArea.DrawEllipse(new Pen(Color.Black, 1), new Rectangle(drawingArea.Width / 2 - 50, drawingArea.Height / 2 - 50, 100, 100));
+            drawingArea.Image = bmp;
+            
 
             canvasContainer.Image = _bmp;
         }
@@ -51,6 +66,8 @@ namespace CharacterRecognitionBP
                 _x = e.X;
                 _y = e.Y;
             }
+
+            drawingArea.Refresh();
             canvasContainer.Refresh();
         }
 
@@ -65,6 +82,7 @@ namespace CharacterRecognitionBP
         private void clearBtn_Click(object sender, EventArgs e)
         {
             ClearCanvas();
+            drawingArea.Refresh();
             pictureBox.Image = null;
         }
 
@@ -181,7 +199,7 @@ namespace CharacterRecognitionBP
             
             trainBtn.Enabled = false;
             resetPerceptronModel.Enabled = false;
-            learningRateTrackbar.Enabled = false;
+            learningRateInput.Enabled = false;
             epochsInput.Enabled = false;
 
             _ctsAuto = new CancellationTokenSource();
@@ -203,14 +221,8 @@ namespace CharacterRecognitionBP
 
             trainBtn.Enabled = true;
             resetPerceptronModel.Enabled = true;
-            learningRateTrackbar.Enabled = true;
+            learningRateInput.Enabled = true;
             epochsInput.Enabled = true;
-        }
-
-        private void learningRateTrackbar_Scroll(object sender, EventArgs e)
-        {
-            double toDecimal = (double)learningRateTrackbar.Value / 1000;
-            learningRate.Text = toDecimal.ToString();
         }
 
         private void resetPerceptronModel_Click(object sender, EventArgs e)
@@ -257,10 +269,20 @@ namespace CharacterRecognitionBP
             await Waiter.ForTrueAsync(() => _ctsAuto is null, 20);
             _trainTask?.Dispose();
             
-            trainBtn.Enabled = true;`
+            trainBtn.Enabled = true;
             resetPerceptronModel.Enabled = true;
-            learningRateTrackbar.Enabled = true;
+            learningRateInput.Enabled = true;
             epochsInput.Enabled = true;
+        }
+
+        private void saveModelBtn_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
