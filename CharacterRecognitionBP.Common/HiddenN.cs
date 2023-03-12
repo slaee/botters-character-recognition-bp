@@ -1,5 +1,3 @@
-using System;
-
 namespace CharacterRecognitionBP.Common
 {
 	public class HNeuron

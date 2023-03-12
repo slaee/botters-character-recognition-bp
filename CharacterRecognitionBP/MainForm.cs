@@ -1,24 +1,29 @@
 using System.Drawing.Imaging;
 using CharacterRecognitionBP.Utils;
+using CharacterRecognitionBP.Interfaces;
 
 namespace CharacterRecognitionBP
 {
     public partial class MainForm : Form
     {
-        int _x = -1;
-        int _y = -1;
-        bool mouseMove = false;
-        
-        Graphics _canvas;
-        Pen _pen;
-        Bitmap _bmp;
+        private readonly IWaiter Waiter;
 
         private Task? _trainTask;
         private CancellationTokenSource? _ctsAuto;
 
-        public MainForm()
+        private int _x = -1;
+        private int _y = -1;
+        private bool mouseMove = false;
+
+        private Pen _pen;
+        private Bitmap _bmp;
+        private Graphics _canvas;
+       
+
+        public MainForm(IWaiter waiter)
         {
             InitializeComponent();
+            Waiter = waiter;
 
             _bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
             _canvas = Graphics.FromImage(_bmp);
@@ -125,7 +130,7 @@ namespace CharacterRecognitionBP
                 {
                     dataSetsFeed.Invoke(new Action(() =>
                     {
-                        dataSetsFeed.Items.Add($"Img: {Path.GetFileNameWithoutExtension(images[j])}   T: {Math.Abs(perceptron.TotalError)}");
+                        //dataSetsFeed.Items.Add($"Img: {Path.GetFileNameWithoutExtension(images[j])}   T: {Math.Abs(perceptron.TotalError)}");
                         dataSetsFeed.SelectedIndex = dataSetsFeed.Items.Count - 1;
                     }));     
 
@@ -135,7 +140,7 @@ namespace CharacterRecognitionBP
 
                     var y = int.Parse(Path.GetFileNameWithoutExtension(images[j]).Last().ToString());
 
-                // Set Perceptron Input and DesiredOutput Here
+                // Start learn the model here
                 // ----------------------------------------
                     
                     
@@ -195,7 +200,7 @@ namespace CharacterRecognitionBP
                 }
             }, _ctsAuto!.Token);
 
-            await ForTrueAsync(() => _ctsAuto is null, 20);
+            await Waiter.ForTrueAsync(() => _ctsAuto is null, 20);
 
             trainBtn.Enabled = true;
             resetPerceptronModel.Enabled = true;
@@ -250,37 +255,13 @@ namespace CharacterRecognitionBP
         private async void stopTraining_Click(object sender, EventArgs e)
         {
             _ctsAuto?.Cancel();
-            await ForTrueAsync(() => _ctsAuto is null, 20);
+            await Waiter.ForTrueAsync(() => _ctsAuto is null, 20);
             _trainTask?.Dispose();
             
             trainBtn.Enabled = true;
             resetPerceptronModel.Enabled = true;
             learningRateTrackbar.Enabled = true;
             epochsInput.Enabled = true;
-        }
-
-        public async ValueTask<bool> ForTrueAsync(Func<bool> predicate, int timeout, int sleepOverride = -1, CancellationToken token = default)
-        {
-            return await ForTrueAsync(predicate, null, timeout, sleepOverride, token);
-        }
-
-        private async ValueTask<bool> ForTrueAsync(Func<bool> predicate, Action? loopFunction, int timeout, int sleepOverride = -1, CancellationToken token = default)
-        {
-            try
-            {
-                int counter = 0;
-                while (!predicate() && !token.IsCancellationRequested)
-                {
-                    if (timeout > 0 && counter >= timeout)
-                        return false;
-                    loopFunction?.Invoke();
-                    await Task.Delay(sleepOverride == -1 ? 20 : sleepOverride, token);
-                    counter++;
-                }
-                return true;
-            }
-            catch { }
-            return false;
         }
     }
 }
