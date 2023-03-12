@@ -29,11 +29,10 @@ namespace CharacterRecognitionBP
             _canvas = Graphics.FromImage(_bmp);
             _canvas.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             _canvas.Clear(Color.White);
-            
-            canvasContainer.Image = _bmp;
-          
             _pen = new Pen(Color.Black, 35);
             _pen.StartCap = _pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+
+            canvasContainer.Image = _bmp;
         }
 
         private void CanvasContainer_MouseDown(object sender, MouseEventArgs e)
