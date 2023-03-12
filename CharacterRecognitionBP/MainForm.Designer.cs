@@ -53,11 +53,9 @@
             this.saveModelBtn = new System.Windows.Forms.Button();
             this.accuracyLabel = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.drawingArea = new CharacterRecognitionBP.Components.TransparentPictureBox();
             this.labelImage = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasContainer)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.drawingArea)).BeginInit();
             this.SuspendLayout();
             // 
             // clearBtn
@@ -301,15 +299,6 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // drawingArea
-            // 
-            this.drawingArea.Enabled = false;
-            this.drawingArea.Location = new System.Drawing.Point(24, 24);
-            this.drawingArea.Name = "drawingArea";
-            this.drawingArea.Size = new System.Drawing.Size(200, 200);
-            this.drawingArea.TabIndex = 29;
-            this.drawingArea.TabStop = false;
-            // 
             // labelImage
             // 
             this.labelImage.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
@@ -324,7 +313,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(623, 634);
             this.Controls.Add(this.labelImage);
-            this.Controls.Add(this.drawingArea);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.accuracyLabel);
             this.Controls.Add(this.saveModelBtn);
@@ -351,10 +339,9 @@
             this.Controls.Add(this.predictBtn);
             this.Controls.Add(this.clearBtn);
             this.Name = "MainForm";
-            this.Text = "Vowel Recognition Perceptron";
+            this.Text = "Handwritten Character Recognition";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasContainer)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.drawingArea)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
