@@ -257,7 +257,7 @@ namespace CharacterRecognitionBP
             await Waiter.ForTrueAsync(() => _ctsAuto is null, 20);
             _trainTask?.Dispose();
             
-            trainBtn.Enabled = true;
+            trainBtn.Enabled = true;`
             resetPerceptronModel.Enabled = true;
             learningRateTrackbar.Enabled = true;
             epochsInput.Enabled = true;
