@@ -5,8 +5,8 @@ namespace CharacterRecognitionBP.Common
 		private INeuron [] ineuron;//approximatelty 3072
 		private HNeuron [] hneuron;// approx 64
 		private ONeuron [] oneuron;//approx 10
-		private const double LRPOUT =0.2;//learning rate for the the ouptput layer
-		private const double LRPIN = 0.15;// learning rate for the input layer
+		private double LRPOUT =0.2;//learning rate for the the ouptput layer
+		private double LRPIN = 0.15;// learning rate for the input layer
 		private double [] errorComponent; // approx 10;
 		private double [] errorDerivative;
 		private double [] desiredout;
@@ -21,15 +21,17 @@ namespace CharacterRecognitionBP.Common
 			errorDerivative=new double[10];
 			createNeurons(ineuron.Length,hneuron.Length,oneuron.Length);
 		}
-		public NeuralNet(int input,int hidden,int output)
-		{
+        public NeuralNet(int input, int hidden, int output, double lrpOut, double lrpIn)
+        {
 			ineuron=new INeuron[input];
 			hneuron=new HNeuron[hidden];
 			oneuron=new ONeuron[output];
 			errorComponent=new double[output];
 			errorDerivative=new double[output];
 			desiredout=new double[output];
-			createNeurons(ineuron.Length,hneuron.Length,oneuron.Length);
+            LRPOUT = lrpOut;
+            LRPIN = lrpIn;
+            createNeurons(ineuron.Length,hneuron.Length,oneuron.Length);
 		}
 		public void createNeurons(int i,int h,int o)
 		{
@@ -51,11 +53,39 @@ namespace CharacterRecognitionBP.Common
 		{
 			return oneuron[pos].getOActivation();
 		}
-		public void setInputs(int pos,double data)
+		
+		public int[] getOutputsData()
+        {
+            int[] data = new int[oneuron.Length];
+            for (int x = 0; x < oneuron.Length; x++)
+            {
+                data[x] = (oneuron[x].getOActivation() > 0.5) ? 1 : 0;
+            }
+            return data;
+        }
+		
+        public void setInputs(int pos,double data)
 		{
 			ineuron[pos].setInput(data);
 		}
-		public void setDesiredOutput(int pos,double data)
+
+		public void setInputs(double[] data)
+		{
+            for (int x_i = 0; x_i < data.Length; x_i++)
+            {
+                ineuron[x_i].setInput(data[x_i]);
+            }
+        }
+
+        public void setDesiredOutput(double[] data)
+        {
+            for (int x = 0; x < data.Length; x++)
+            {
+                desiredout[x] = data[x];
+            }
+        }
+		
+        public void setDesiredOutput(int pos,double data)
 		{
 			desiredout[pos]=data;
 		}
@@ -132,9 +162,22 @@ namespace CharacterRecognitionBP.Common
 				oneuron[x].changeBias(LRPOUT,errorDerivative);
 			for (int x=0;x<hneuron.Length;x++)//change in 2 neuron bias
 				hneuron[x].changeBias(LRPIN);
+        }
 
-		}
-		public void run()
+		public double getTotalError()
+		{
+            // sum all the errors and divide by the number of errors
+            double sum = 0;
+            for (int x = 0; x < hneuron.Length; x++)
+            {
+                sum += hneuron[x].getErr();
+            }
+
+            sum = sum / hneuron.Length;
+			return sum;
+        }
+
+        public void run()
 		{
 			this.calculateHA();
 			this.calculateOA();

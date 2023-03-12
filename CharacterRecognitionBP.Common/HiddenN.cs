@@ -129,8 +129,4 @@ namespace CharacterRecognitionBP.Common
 			return number; 
 		}
 	}//end of class HNeuron
-
-
-
-
 }

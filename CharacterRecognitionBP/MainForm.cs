@@ -1,6 +1,8 @@
 using System.Drawing.Imaging;
 using CharacterRecognitionBP.Utils;
 using CharacterRecognitionBP.Interfaces;
+using CharacterRecognitionBP.Common;
+using System.Diagnostics;
 
 namespace CharacterRecognitionBP
 {
@@ -18,14 +20,16 @@ namespace CharacterRecognitionBP
         private Pen _pen;
         private Bitmap _bmp;
         private Graphics _canvas;
-
         private Graphics _drawingArea;
+
+        private NeuralNet NN;
        
 
         public MainForm(IWaiter waiter)
         {
             InitializeComponent();
             Waiter = waiter;
+            NN = new NeuralNet(input: 1024, hidden: 60, output: 5, lrpOut: 0.2, lrpIn: 0.15);
 
             Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "images"));
 
@@ -98,26 +102,30 @@ namespace CharacterRecognitionBP
         {
             ProcessImage();
         }
-        
+
         private void ProcessImage()
         {
             var ms = new MemoryStream();
             //remove the drawingArea child of canvasContainer
             drawingArea.Parent = null;
             var bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
-            
+
             canvasContainer.DrawToBitmap(bmp, new Rectangle(0, 0, canvasContainer.Width, canvasContainer.Height));
-            bmp.Save(Path.Combine(AppContext.BaseDirectory, "images", $"original-{TimeStamp.GetUTCNow()}-{labelImage.Text}.png"), ImageFormat.Png);
+            //bmp.Save(Path.Combine(AppContext.BaseDirectory, "images", $"original-{TimeStamp.GetUTCNow()}-{labelImage.Text}.png"), ImageFormat.Png);
 
             drawingArea.Parent = canvasContainer;
 
             var image = DIP.ResizeImage(bmp, 32, 32);
-            image.Save(Path.Combine(AppContext.BaseDirectory, "images", $"{TimeStamp.GetUTCNow()}-{labelImage.Text}.png"), ImageFormat.Png);
+            //image.Save(Path.Combine(AppContext.BaseDirectory, "images", $"{TimeStamp.GetUTCNow()}-{labelImage.Text}.png"), ImageFormat.Png);
             image.Save(ms, ImageFormat.Png);
 
             pictureBox.Image = image;
             //predictedOutput.Text = perceptron.Prediction(DIP.GetBits(ms));
-            
+            NN.setInputs(DIP.GetBits<double>(ms));
+            NN.run();
+
+            var output = NN.getOutputsData();
+            predictedOutput.Text = $"{output[0]}{output[1]}{output[2]}{output[3]}{output[4]}";
         }
 
         private async Task Train(CancellationToken token)
@@ -148,27 +156,35 @@ namespace CharacterRecognitionBP
             {
                 for (int j = 0; j < images.Length && !token.IsCancellationRequested; j++)
                 {
-                    dataSetsFeed.Invoke(new Action(() =>
-                    {
-                        //dataSetsFeed.Items.Add($"Img: {Path.GetFileNameWithoutExtension(images[j])}   T: {Math.Abs(perceptron.TotalError)}");
-                        dataSetsFeed.SelectedIndex = dataSetsFeed.Items.Count - 1;
-                    }));
-
                     var x = new MemoryStream();
                     var image = Image.FromFile(images[j]);
                     image.Save(x, ImageFormat.Png);
 
-                    var y = int.Parse(Path.GetFileNameWithoutExtension(images[j]).Last().ToString());
+                    var y = Path.GetFileNameWithoutExtension(images[j]).Split('-')[1];
+                    double[] y_outputs = y.Select(c => c == '1' ? 1.0 : 0.0).ToArray();
 
                 // Start learn the model here
                 // ----------------------------------------
-                    
-                    
+                    NN.setInputs(DIP.GetBits<double>(x));
+                    NN.setDesiredOutput(y_outputs);
+                    NN.learn();
                 // ----------------------------------------
 
+                    dataSetsFeed.Invoke(new Action(() =>
+                    {
+                        dataSetsFeed.Items.Add($"Img: {Path.GetFileNameWithoutExtension(images[j])}   T: {Math.Abs(NN.getTotalError())}");
+                        dataSetsFeed.SelectedIndex = dataSetsFeed.Items.Count - 1;
+                    }));
+                    
                     pictureBox.Image = image;
                     _canvas = Graphics.FromImage(Image.FromFile(originalImages[j]));
                     canvasContainer.Image = Image.FromFile(originalImages[j]);
+                }
+
+                if(NN.countgood())
+                {
+                    _ctsAuto!.Cancel();
+                    break;
                 }
 
                 //if (Math.Abs(perceptron.TotalError) < 0.01)
@@ -176,14 +192,12 @@ namespace CharacterRecognitionBP
                 //    _ctsAuto!.Cancel();
                 //    break;
                 //}
-                
                 countEpoch++;
+                epochsLabel.Invoke(new Action(() =>
+                {
+                    epochsLabel.Text = $"Epochs: {countEpoch}";
+                }));
             }
-
-            epochsLabel.Invoke(new Action(() =>
-            {
-                epochsLabel.Text = $"Epochs: {countEpoch}";
-            }));
 
             totalErrorLabel.Invoke(new Action(() =>
             {
@@ -212,7 +226,10 @@ namespace CharacterRecognitionBP
                 {
                     await Train(_ctsAuto!.Token);
                 } 
-                catch { }
+                catch (Exception e)
+                {
+                    Trace.WriteLine(e.StackTrace);
+                }
                 finally
                 {
                     _ctsAuto?.Dispose();
