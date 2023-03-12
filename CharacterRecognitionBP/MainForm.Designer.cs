@@ -53,7 +53,7 @@
             this.saveModelBtn = new System.Windows.Forms.Button();
             this.accuracyLabel = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.drawingArea = new CharacterRecognitionBP.Component.TransparentPictureBox();
+            this.drawingArea = new CharacterRecognitionBP.Components.TransparentPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasContainer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.drawingArea)).BeginInit();
@@ -108,7 +108,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(37, 15);
             this.label1.TabIndex = 5;
-            this.label1.Text = "15x15";
+            this.label1.Text = "32x32";
             // 
             // label2
             // 
@@ -303,7 +303,7 @@
             // drawingArea
             // 
             this.drawingArea.Enabled = false;
-            this.drawingArea.Location = new System.Drawing.Point(36, 36);
+            this.drawingArea.Location = new System.Drawing.Point(24, 24);
             this.drawingArea.Name = "drawingArea";
             this.drawingArea.Size = new System.Drawing.Size(200, 200);
             this.drawingArea.TabIndex = 29;
@@ -376,6 +376,6 @@
         private Button saveModelBtn;
         private Label accuracyLabel;
         private Button button1;
-        private Component.TransparentPictureBox drawingArea;
+        private Components.TransparentPictureBox drawingArea;
     }
 }

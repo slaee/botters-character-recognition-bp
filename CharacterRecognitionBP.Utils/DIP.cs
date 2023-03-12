@@ -82,9 +82,9 @@ namespace CharacterRecognitionBP.Utils
             var img = Image.FromStream(memoryStream);
             var bmp = new Bitmap(img);
 
-            if (img.Width != 15 || img.Height != 15)
+            if (img.Width != 32 || img.Height != 32)
             {
-                img = ResizeImage(img, 15, 15);
+                img = ResizeImage(img, 32, 32);
                 bmp = new Bitmap(img);
             }
 
@@ -124,13 +124,13 @@ namespace CharacterRecognitionBP.Utils
             var img = Image.FromStream(memoryStream);
             var bmp = new Bitmap(img);
 
-            if (img.Width != 15 || img.Height != 15)
+            if (img.Width != 15 || img.Height != 32)
             {
-                img = ResizeImage(img, 15, 15);
+                img = ResizeImage(img, 32, 32);
                 bmp = new Bitmap(img);
             }
 
-            int[] bits = new int[225];
+            int[] bits = new int[32*32];
             int k = 0;
             for (int i = 0; i < bmp.Height; i++)
             {

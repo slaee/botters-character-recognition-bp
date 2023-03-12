@@ -33,21 +33,20 @@ namespace CharacterRecognitionBP
             _canvas.Clear(Color.White);
             _pen = new Pen(Color.Black, 35);
             _pen.StartCap = _pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-
+            
+            canvasContainer.Image = _bmp;
+            
             var bmp = new Bitmap(drawingArea.Width, drawingArea.Height);
             _drawingArea = Graphics.FromImage(bmp);
             _drawingArea.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            _drawingArea.DrawLine(new Pen(Color.Gray, 1), new Point(0, drawingArea.Height / 2), new Point(drawingArea.Width, drawingArea.Height / 2));
+            _drawingArea.DrawLine(new Pen(Color.Gray, 1), new Point(drawingArea.Width / 2, 0), new Point(drawingArea.Width / 2, drawingArea.Height));
+            _drawingArea.DrawEllipse(new Pen(Color.Gray, 1), new Rectangle(drawingArea.Width / 2 - 50, drawingArea.Height / 2 - 50, 100, 100));
+            _drawingArea.DrawEllipse(new Pen(Color.Gray, 1), new Rectangle(drawingArea.Width / 2 - 90, drawingArea.Height / 2 - 90, 180, 180));
 
-            // Draw a cross line with a circle line in the middle
-            _drawingArea.DrawLine(new Pen(Color.Black, 1), new Point(0, drawingArea.Height / 2), new Point(drawingArea.Width, drawingArea.Height / 2));
-
-            _drawingArea.DrawLine(new Pen(Color.Black, 1), new Point(drawingArea.Width / 2, 0), new Point(drawingArea.Width / 2, drawingArea.Height));
-
-            _drawingArea.DrawEllipse(new Pen(Color.Black, 1), new Rectangle(drawingArea.Width / 2 - 50, drawingArea.Height / 2 - 50, 100, 100));
+            drawingArea.BackColor = Color.Transparent;
             drawingArea.Image = bmp;
-            
-
-            canvasContainer.Image = _bmp;
+            drawingArea.Parent = canvasContainer;
         }
 
         private void CanvasContainer_MouseDown(object sender, MouseEventArgs e)
@@ -66,8 +65,6 @@ namespace CharacterRecognitionBP
                 _x = e.X;
                 _y = e.Y;
             }
-
-            drawingArea.Refresh();
             canvasContainer.Refresh();
         }
 
@@ -82,7 +79,6 @@ namespace CharacterRecognitionBP
         private void clearBtn_Click(object sender, EventArgs e)
         {
             ClearCanvas();
-            drawingArea.Refresh();
             pictureBox.Image = null;
         }
 
@@ -104,17 +100,22 @@ namespace CharacterRecognitionBP
         private void ProcessImage()
         {
             var ms = new MemoryStream();
+            //remove the drawingArea child of canvasContainer
+            drawingArea.Parent = null;
             var bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
-
+            
             canvasContainer.DrawToBitmap(bmp, new Rectangle(0, 0, canvasContainer.Width, canvasContainer.Height));
             //bmp.Save(Path.Combine(AppContext.BaseDirectory, "images", $"original-{TimeStamp.GetUTCNow()}-{labelY.Text}.png"), ImageFormat.Png);
 
-            var image = DIP.ResizeImage(bmp, 15, 15);
+            drawingArea.Parent = canvasContainer;
+
+            var image = DIP.ResizeImage(bmp, 32, 32);
             //image.Save(Path.Combine(AppContext.BaseDirectory, "images", $"{TimeStamp.GetUTCNow()}-{labelY.Text}.png"), ImageFormat.Png);
             image.Save(ms, ImageFormat.Png);
 
             pictureBox.Image = image;
             //predictedOutput.Text = perceptron.Prediction(DIP.GetBits(ms));
+            
         }
 
         private async Task Train(CancellationToken token)
@@ -149,7 +150,7 @@ namespace CharacterRecognitionBP
                     {
                         //dataSetsFeed.Items.Add($"Img: {Path.GetFileNameWithoutExtension(images[j])}   T: {Math.Abs(perceptron.TotalError)}");
                         dataSetsFeed.SelectedIndex = dataSetsFeed.Items.Count - 1;
-                    }));     
+                    }));
 
                     var x = new MemoryStream();
                     var image = Image.FromFile(images[j]);
