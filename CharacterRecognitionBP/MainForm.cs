@@ -27,6 +27,8 @@ namespace CharacterRecognitionBP
             InitializeComponent();
             Waiter = waiter;
 
+            Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "images"));
+
             _bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
             _canvas = Graphics.FromImage(_bmp);
             _canvas.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
@@ -105,12 +107,12 @@ namespace CharacterRecognitionBP
             var bmp = new Bitmap(canvasContainer.Width, canvasContainer.Height);
             
             canvasContainer.DrawToBitmap(bmp, new Rectangle(0, 0, canvasContainer.Width, canvasContainer.Height));
-            //bmp.Save(Path.Combine(AppContext.BaseDirectory, "images", $"original-{TimeStamp.GetUTCNow()}-{labelY.Text}.png"), ImageFormat.Png);
+            bmp.Save(Path.Combine(AppContext.BaseDirectory, "images", $"original-{TimeStamp.GetUTCNow()}-{labelImage.Text}.png"), ImageFormat.Png);
 
             drawingArea.Parent = canvasContainer;
 
             var image = DIP.ResizeImage(bmp, 32, 32);
-            //image.Save(Path.Combine(AppContext.BaseDirectory, "images", $"{TimeStamp.GetUTCNow()}-{labelY.Text}.png"), ImageFormat.Png);
+            image.Save(Path.Combine(AppContext.BaseDirectory, "images", $"{TimeStamp.GetUTCNow()}-{labelImage.Text}.png"), ImageFormat.Png);
             image.Save(ms, ImageFormat.Png);
 
             pictureBox.Image = image;

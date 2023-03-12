@@ -54,6 +54,7 @@
             this.accuracyLabel = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.drawingArea = new CharacterRecognitionBP.Components.TransparentPictureBox();
+            this.labelImage = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasContainer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.drawingArea)).BeginInit();
@@ -309,11 +310,20 @@
             this.drawingArea.TabIndex = 29;
             this.drawingArea.TabStop = false;
             // 
+            // labelImage
+            // 
+            this.labelImage.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.labelImage.Location = new System.Drawing.Point(373, 127);
+            this.labelImage.Name = "labelImage";
+            this.labelImage.Size = new System.Drawing.Size(100, 29);
+            this.labelImage.TabIndex = 30;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(623, 634);
+            this.Controls.Add(this.labelImage);
             this.Controls.Add(this.drawingArea);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.accuracyLabel);
@@ -377,5 +387,6 @@
         private Label accuracyLabel;
         private Button button1;
         private Components.TransparentPictureBox drawingArea;
+        private TextBox labelImage;
     }
 }
