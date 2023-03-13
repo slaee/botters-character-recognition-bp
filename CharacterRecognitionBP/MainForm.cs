@@ -4,6 +4,7 @@ using CharacterRecognitionBP.Interfaces;
 using CharacterRecognitionBP.Common;
 using System.Diagnostics;
 using CharacterRecognitionBP.Components;
+using System.Windows.Forms;
 
 namespace CharacterRecognitionBP
 {
@@ -298,18 +299,60 @@ namespace CharacterRecognitionBP
 
         private void saveModelBtn_Click(object sender, EventArgs e)
         {
+            // open file dialog to save the file
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "txt files (*.txt)|*.txt";
+            string path = string.Empty;
 
+            if(sfd.ShowDialog() == DialogResult.Cancel)
+                return;
+            
+            path = Path.GetFullPath(sfd.FileName);
+
+            NN.saveWeights(path);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            using var fbd = new OpenFileDialog();
+            fbd.Filter = "txt files (*.txt)|*.txt";
+            fbd.Title = "Select the weight txt file format";
 
+            string path = fbd.ShowDialog() == DialogResult.OK ? fbd.FileName : string.Empty;
+
+            if(path != string.Empty)
+            {
+                NN.loadWeights(path);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            string promptVal = Prompt.ShowDialog("Test", "123");
-            Trace.WriteLine(promptVal);
+            if (dataSetPath.Text.Contains("No data set loaded"))
+            {
+                MessageBox.Show("Please select a data set first", "No data set loaded", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+            
+            string promptVal = Prompt.ShowDialog("Correct output", "Update");
+           
+            if (promptVal != string.Empty)
+            {
+                double[] y_outputs = promptVal.Select(c => c == '1' ? 1.0 : 0.0).ToArray();
+
+                var ms = new MemoryStream();
+
+                canvasContainer.Image.Save(Path.Combine(dataSetPath.Text, $"original-{TimeStamp.GetUTCNow()}-{promptVal}.png"), ImageFormat.Png);
+                
+                pictureBox.Image.Save(Path.Combine(dataSetPath.Text, $"{TimeStamp.GetUTCNow()}-{promptVal}.png"), ImageFormat.Png);
+
+                pictureBox.Image.Save(ms, ImageFormat.Png);
+
+                NN.setInputs(DIP.GetBits<double>(ms));
+                NN.setDesiredOutput(y_outputs);
+                NN.learn();
+            }
         }
     }
 }

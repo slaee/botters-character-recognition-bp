@@ -6,15 +6,15 @@
         {
             Form prompt = new Form()
             {
-                Width = 500,
+                Width = 210,
                 Height = 150,
                 FormBorderStyle = FormBorderStyle.FixedDialog,
                 Text = caption,
                 StartPosition = FormStartPosition.CenterScreen
             };
-            Label textLabel = new Label() { Left = 50, Top = 20, Text = text };
-            TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
-            Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 70, DialogResult = DialogResult.OK };
+            Label textLabel = new Label() { Left = 20, Top = 10, Text = text };
+            TextBox textBox = new TextBox() { Left = 20, Top = 30, Width = 150 };
+            Button confirmation = new Button() { Text = "Submit", Left = 70, Width = 50, Top = 60, DialogResult = DialogResult.OK };
             confirmation.Click += (sender, e) => { prompt.Close(); };
             prompt.Controls.Add(textBox);
             prompt.Controls.Add(confirmation);

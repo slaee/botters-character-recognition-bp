@@ -196,7 +196,6 @@ namespace CharacterRecognitionBP.Common
 		}
 		public void saveWeights(String path)
 		{
-
 			using (StreamWriter sw = new StreamWriter(path)) 
 			{
 				for (int x=0;x<ineuron.Length;x++)//saving the weights of the input layer

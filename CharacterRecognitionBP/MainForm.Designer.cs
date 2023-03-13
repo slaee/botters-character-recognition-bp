@@ -53,7 +53,7 @@
             this.saveModelBtn = new System.Windows.Forms.Button();
             this.accuracyLabel = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.incorrectButton = new System.Windows.Forms.Button();
             this.drawingArea = new CharacterRecognitionBP.Components.TransparentPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasContainer)).BeginInit();
@@ -301,15 +301,15 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // button2
+            // incorrectButton
             // 
-            this.button2.Location = new System.Drawing.Point(490, 127);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(109, 34);
-            this.button2.TabIndex = 31;
-            this.button2.Text = "Incorrect";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.incorrectButton.Location = new System.Drawing.Point(490, 127);
+            this.incorrectButton.Name = "incorrectButton";
+            this.incorrectButton.Size = new System.Drawing.Size(109, 34);
+            this.incorrectButton.TabIndex = 31;
+            this.incorrectButton.Text = "Incorrect";
+            this.incorrectButton.UseVisualStyleBackColor = true;
+            this.incorrectButton.Click += new System.EventHandler(this.button2_Click);
             // 
             // drawingArea
             // 
@@ -326,7 +326,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(623, 634);
             this.Controls.Add(this.drawingArea);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.incorrectButton);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.accuracyLabel);
             this.Controls.Add(this.saveModelBtn);
@@ -388,7 +388,7 @@
         private Button saveModelBtn;
         private Label accuracyLabel;
         private Button button1;
-        private Button button2;
+        private Button incorrectButton;
         private Components.TransparentPictureBox drawingArea;
     }
 }
