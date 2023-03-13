@@ -252,6 +252,8 @@ namespace CharacterRecognitionBP
             totalErrorLabel.Text = "Total Error:";
             epochsLabel.Text = $"Epochs:";
             dataSetsFeed.Items.Clear();
+            NN = null;
+            NN = new NeuralNet(input: 1024, hidden: 60, output: 5, lrpOut: 0.2, lrpIn: 0.15);
         }
 
         private void randCharImageBtn_Click(object sender, EventArgs e)
