@@ -53,9 +53,11 @@
             this.saveModelBtn = new System.Windows.Forms.Button();
             this.accuracyLabel = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.labelImage = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.drawingArea = new CharacterRecognitionBP.Components.TransparentPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasContainer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.drawingArea)).BeginInit();
             this.SuspendLayout();
             // 
             // clearBtn
@@ -299,20 +301,32 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // labelImage
+            // button2
             // 
-            this.labelImage.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.labelImage.Location = new System.Drawing.Point(373, 127);
-            this.labelImage.Name = "labelImage";
-            this.labelImage.Size = new System.Drawing.Size(100, 29);
-            this.labelImage.TabIndex = 30;
+            this.button2.Location = new System.Drawing.Point(490, 127);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(109, 34);
+            this.button2.TabIndex = 31;
+            this.button2.Text = "Incorrect";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // drawingArea
+            // 
+            this.drawingArea.Enabled = false;
+            this.drawingArea.Location = new System.Drawing.Point(24, 24);
+            this.drawingArea.Name = "drawingArea";
+            this.drawingArea.Size = new System.Drawing.Size(200, 200);
+            this.drawingArea.TabIndex = 32;
+            this.drawingArea.TabStop = false;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(623, 634);
-            this.Controls.Add(this.labelImage);
+            this.Controls.Add(this.drawingArea);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.accuracyLabel);
             this.Controls.Add(this.saveModelBtn);
@@ -342,6 +356,7 @@
             this.Text = "Handwritten Character Recognition";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasContainer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.drawingArea)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -373,7 +388,7 @@
         private Button saveModelBtn;
         private Label accuracyLabel;
         private Button button1;
+        private Button button2;
         private Components.TransparentPictureBox drawingArea;
-        private TextBox labelImage;
     }
 }

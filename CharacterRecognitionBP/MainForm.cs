@@ -3,6 +3,7 @@ using CharacterRecognitionBP.Utils;
 using CharacterRecognitionBP.Interfaces;
 using CharacterRecognitionBP.Common;
 using System.Diagnostics;
+using CharacterRecognitionBP.Components;
 
 namespace CharacterRecognitionBP
 {
@@ -303,6 +304,12 @@ namespace CharacterRecognitionBP
         private void button1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string promptVal = Prompt.ShowDialog("Test", "123");
+            Trace.WriteLine(promptVal);
         }
     }
 }
