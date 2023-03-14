@@ -4,7 +4,6 @@ using CharacterRecognitionBP.Interfaces;
 using CharacterRecognitionBP.Common;
 using System.Diagnostics;
 using CharacterRecognitionBP.Components;
-using System.Windows.Forms;
 
 namespace CharacterRecognitionBP
 {
@@ -154,16 +153,20 @@ namespace CharacterRecognitionBP
             originalImages = imageDictionary.Values.ToArray();
 
             int countEpoch = 0;
+            var x = new MemoryStream();
+            Image image;
+            string y;
+            double[] y_outputs;
+
             for (int i = 0; i < Convert.ToInt32(epochsInput.Text) && !token.IsCancellationRequested; i++)
             {
                 for (int j = 0; j < images.Length && !token.IsCancellationRequested; j++)
                 {
-                    var x = new MemoryStream();
-                    var image = Image.FromFile(images[j]);
+                    image = Image.FromFile(images[j]);
                     image.Save(x, ImageFormat.Png);
 
-                    var y = Path.GetFileNameWithoutExtension(images[j]).Split('-')[1];
-                    double[] y_outputs = y.Select(c => c == '1' ? 1.0 : 0.0).ToArray();
+                    y = Path.GetFileNameWithoutExtension(images[j]).Split('-')[1];
+                    y_outputs = y.Select(c => c == '1' ? 1.0 : 0.0).ToArray();
 
                 // Start learn the model here
                 // ----------------------------------------
@@ -179,7 +182,6 @@ namespace CharacterRecognitionBP
                     }));
                     
                     pictureBox.Image = image;
-                    _canvas = Graphics.FromImage(Image.FromFile(originalImages[j]));
                     canvasContainer.Image = Image.FromFile(originalImages[j]);
                 }
 

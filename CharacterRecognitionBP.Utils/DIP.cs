@@ -119,18 +119,18 @@ namespace CharacterRecognitionBP.Utils
         /// Returns array of bits from a bitmap image.
         /// </summary>
         /// <param name="memoryStream">The streamed image from bitmap.</param>
-        public static T[] GetBits<T>(MemoryStream memoryStream)
+        public static T[,] GetBits<T>(MemoryStream memoryStream)
         {
             var img = Image.FromStream(memoryStream);
             var bmp = new Bitmap(img);
             
-            if (img.Width != 15 || img.Height != 32)
+            if (img.Width != 32 || img.Height != 32)
             {
                 img = ResizeImage(img, 32, 32);
                 bmp = new Bitmap(img);
             }
             
-            T[] bits = new T[32*32];
+            T[,] bits = new T[32,32];
             int k = 0;
             for (int i = 0; i < bmp.Height; i++)
             {
@@ -143,13 +143,13 @@ namespace CharacterRecognitionBP.Utils
 
                     if ((a > 0) && (r > 0) && (g > 0) && (b > 0))
                     {
-                        bits[k] = (T)Convert.ChangeType(0, typeof(T));
+                        bits[i,j] = (T)Convert.ChangeType(0, typeof(T));
                     }
                     else
                     {
-                        bits[k] = (T)Convert.ChangeType(1, typeof(T));
+                        bits[i,j] = (T)Convert.ChangeType(1, typeof(T));
                     }
-
+                    
                     k++;
                 }
             }
