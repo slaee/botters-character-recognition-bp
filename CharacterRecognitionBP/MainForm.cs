@@ -152,61 +152,70 @@ namespace CharacterRecognitionBP
             images = imageDictionary.Keys.ToArray();
             originalImages = imageDictionary.Values.ToArray();
 
-            int countEpoch = 0;
-            var x = new MemoryStream();
-            Image image;
-            string y;
-            double[] y_outputs;
-
+            int countEpoch = 1;
+            int epochsWithoutImprovement = 0;
+            double bestValidationLoss = double.MaxValue;
+            
             for (int i = 0; i < Convert.ToInt32(epochsInput.Text) && !token.IsCancellationRequested; i++)
             {
                 for (int j = 0; j < images.Length && !token.IsCancellationRequested; j++)
                 {
-                    image = Image.FromFile(images[j]);
+                    var x = new MemoryStream();
+                    var image = Image.FromFile(images[j]);
                     image.Save(x, ImageFormat.Png);
 
-                    y = Path.GetFileNameWithoutExtension(images[j]).Split('-')[1];
-                    y_outputs = y.Select(c => c == '1' ? 1.0 : 0.0).ToArray();
+                    var y = Path.GetFileNameWithoutExtension(images[j]).Split('-')[1];
+                    var y_outputs = y.Select(c => c == '1' ? 1.0 : 0.0).ToArray();
 
-                // Start learn the model here
-                // ----------------------------------------
+                    // Start learn the model here
+                    // ----------------------------------------
                     NN.setInputs(DIP.GetBits<double>(x));
                     NN.setDesiredOutput(y_outputs);
                     NN.learn();
-                // ----------------------------------------
+                    // ----------------------------------------
 
-                    dataSetsFeed.Invoke(new Action(() =>
-                    {
-                        dataSetsFeed.Items.Add($"Img: {Path.GetFileNameWithoutExtension(images[j])}   T: {Math.Abs(NN.getTotalError())}");
-                        dataSetsFeed.SelectedIndex = dataSetsFeed.Items.Count - 1;
-                    }));
-                    
-                    pictureBox.Image = image;
-                    canvasContainer.Image = Image.FromFile(originalImages[j]);
+                    //dataSetsFeed.Invoke(new Action(() =>
+                    //{
+                    //    dataSetsFeed.Items.Add($"Img: {Path.GetFileNameWithoutExtension(images[j])}   T: {Math.Abs(NN.getTotalError())}");
+                    //    dataSetsFeed.SelectedIndex = dataSetsFeed.Items.Count - 1;
+                    //}));
+
+                    //pictureBox.Image = image;
+                    //canvasContainer.Image = Image.FromFile(originalImages[j]);
                 }
 
-                if(NN.countgood())
+                var totalLoss = NN.getCrossEntropyLoss();
+                if (totalLoss < bestValidationLoss)
+                {
+                    bestValidationLoss = totalLoss;
+                    epochsWithoutImprovement = 0;
+                }
+                else
+                {
+                    epochsWithoutImprovement++;
+                }
+
+                if (epochsWithoutImprovement >= 2)
                 {
                     _ctsAuto!.Cancel();
                     break;
                 }
 
-                //if (Math.Abs(perceptron.TotalError) < 0.01)
-                //{
-                //    _ctsAuto!.Cancel();
-                //    break;
-                //}
-                countEpoch++;
-                epochsLabel.Invoke(new Action(() =>
+                dataSetsFeed.Invoke(new Action(() =>
                 {
                     epochsLabel.Text = $"Epochs: {countEpoch}";
+                    //dataSetsFeed.Items.Add($"Img: {Path.GetFileNameWithoutExtension(images[j])}   T: {Math.Abs(NN.getTotalError())}");
+                    dataSetsFeed.Items.Add($"Epoch {countEpoch}/{epochsInput.Text}\tloss: {NN.getCrossEntropyLoss()}\taccuracy: {NN.getAccuracy()}");
+                    dataSetsFeed.SelectedIndex = dataSetsFeed.Items.Count - 1;
                 }));
+
+                countEpoch++;
             }
 
-            totalErrorLabel.Invoke(new Action(() =>
-            {
-                //totalErrorLabel.Text = $"Total Error: {Math.Abs(perceptron.TotalError).ToString()}";
-            }));
+            //totalErrorLabel.Invoke(new Action(() =>
+            //{
+            //    totalErrorLabel.Text = $"Total Error: {Math.Abs(perceptron.TotalError).ToString()}";
+            //}));
         }
 
         private async void trainBtn_Click(object sender, EventArgs e)

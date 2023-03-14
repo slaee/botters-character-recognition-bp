@@ -1,8 +1,10 @@
+using System.Security.Cryptography;
+
 namespace CharacterRecognitionBP.Common
 {
 	public class NeuralNet
 	{
-		private INeuron [,] ineuron;//approximatelty 3072
+		private INeuron [] ineuron;//approximatelty 3072
 		private HNeuron [] hneuron;// approx 64
 		private ONeuron [] oneuron;//approx 10
 		private double LRPOUT =0.2;//learning rate for the the ouptput layer
@@ -10,12 +12,10 @@ namespace CharacterRecognitionBP.Common
 		private double [] errorComponent; // approx 10;
 		private double [] errorDerivative;
 		private double [] desiredout;
-		
-		private int _inputDimensionSize;
 
 		public NeuralNet()
 		{
-			ineuron=new INeuron[32,32];
+			ineuron=new INeuron[3072];
 			hneuron=new HNeuron[64];
 			oneuron=new ONeuron[10];
 			desiredout=new double[10];
@@ -25,8 +25,7 @@ namespace CharacterRecognitionBP.Common
 		}
         public NeuralNet(int input, int hidden, int output, double lrpOut, double lrpIn)
         {
-            _inputDimensionSize = (int) Math.Ceiling(Math.Sqrt(input));
-            ineuron =new INeuron[_inputDimensionSize, _inputDimensionSize];
+            ineuron =new INeuron[input];
 			hneuron=new HNeuron[hidden];
 			oneuron=new ONeuron[output];
 			errorComponent=new double[output];
@@ -34,17 +33,13 @@ namespace CharacterRecognitionBP.Common
 			desiredout=new double[output];
             LRPOUT = lrpOut;
             LRPIN = lrpIn;
-            createNeurons(_inputDimensionSize, hneuron.Length,oneuron.Length);
+            createNeurons(input, hneuron.Length,oneuron.Length);
 		}
 		public void createNeurons(int inputSize,int hiddenLayerSize,int outputLayerSize)
 		{
-			for (int xi = 0; xi < inputSize; xi++)
+			for (int x = 0; x < inputSize; x++)
 			{
-                for (int xj = 0; xj < inputSize; xj++)
-                {
-                    int id = xi + xj;
-                    ineuron[xi, xj] = new INeuron(id, hiddenLayerSize);
-                }
+                ineuron[x] = new INeuron(x, hiddenLayerSize);
             }
 			for (int x=0;x< hiddenLayerSize; x++)
 			{
@@ -73,20 +68,14 @@ namespace CharacterRecognitionBP.Common
 		
         public void setInputs(int pos,double data)
 		{
-            int idI = pos / _inputDimensionSize;
-            int idJ = pos % _inputDimensionSize;
-
-            ineuron[idI, idJ].setInput(data);
+            ineuron[pos].setInput(data);
 		}
 
-		public void setInputs(double[,] data)
+		public void setInputs(double[] data)
 		{
-            for (int x_i = 0; x_i < _inputDimensionSize; x_i++)
+            for (int x_i = 0; x_i < data.Length; x_i++)
             {
-                for (int x_j = 0; x_j < _inputDimensionSize; x_j++)
-                {
-                    ineuron[x_i, x_j].setInput(data[x_i, x_j]);
-                }
+                ineuron[x_i].setInput(data[x_i]);
             }
         }
 
@@ -116,13 +105,10 @@ namespace CharacterRecognitionBP.Common
 			for(int x=0;x<hneuron.Length;x++)
 			{
 				double summation=0.0;
-				for(int y=0;y< _inputDimensionSize; y++)
+				for(int y=0;y< ineuron.Length; y++)
 				{
-					for (int z = 0; z < _inputDimensionSize; z++)
-					{
-                        summation += ineuron[y,z].getInput() * ineuron[y,z].getWeight(x);
-                    }
-				}
+                    summation += ineuron[y].getInput() * ineuron[y].getWeight(x);
+                }
 				
 				hneuron[x].setHactivation(sigmoid(summation+hneuron[x].getBias()));
 				//hneuron[x].setHactivation(sigmoid(summation));
@@ -167,14 +153,11 @@ namespace CharacterRecognitionBP.Common
 				hneuron[x].calculateErr(errorDerivative);
 			for(int x=0;x<hneuron.Length;x++)//change in the weights in the 2 to ouput
 				hneuron[x].setWeight(LRPOUT,errorDerivative);
-			for(int x=0;x< _inputDimensionSize; x++)//change the weights in the input to 2
+			for(int x=0;x< ineuron.Length; x++)//change the weights in the input to 2
 			{
-                for (int y = 0; y < _inputDimensionSize; y++)
-				{
-                    for (int z = 0; z < hneuron.Length; z++)
-                    {
-                        ineuron[x,y].setWeight(y, hneuron[z].getErr(), LRPIN);
-                    }
+                for (int y = 0; y < hneuron.Length; y++)
+                {
+                    ineuron[x].setWeight(y, hneuron[y].getErr(), LRPIN);
                 }
 			}
 			for (int x=0;x<oneuron.Length;x++)//change in output neuron bias
@@ -213,18 +196,49 @@ namespace CharacterRecognitionBP.Common
 			}
 			return result;
 		}
+
+		public double getCrossEntropyLoss()
+		{
+            double sum = 0;
+            for (int x = 0; x < oneuron.Length; x++)
+            {
+                sum += (desiredout[x] * System.Math.Log(oneuron[x].getOActivation())) + ((1 - desiredout[x]) * System.Math.Log(1 - oneuron[x].getOActivation()));
+            }
+            return Math.Round(-sum, 4);
+        }
+
+		public double getAccuracy()
+		{
+            double sum = 0;
+            for (int x = 0; x < oneuron.Length; x++)
+            {
+                if (desiredout[x] == 1)
+                {
+                    if (oneuron[x].getOActivation() >= 0.9)
+                    {
+                        sum++;
+                    }
+                }
+                else
+                {
+                    if (oneuron[x].getOActivation() <= 0.5)
+                    {
+                        sum++;
+                    }
+                }
+            }
+            return Math.Round(sum / oneuron.Length, 4);
+        }
+		
 		public void saveWeights(String path)
 		{
 			using (StreamWriter sw = new StreamWriter(path)) 
 			{
-                for (int x=0; x < _inputDimensionSize; x++)//saving the weights of the input layer
+                for (int x=0; x < ineuron.Length; x++)//saving the weights of the input layer
 				{
-					for (int y = 0; y < _inputDimensionSize; y++)
+					for (int y = 0; y < hneuron.Length; y++)
 					{
-                        for (int z = 0; z < hneuron.Length; z++)
-                        {
-                            sw.WriteLine(ineuron[x,y].getWeight(z));
-                        }
+                        sw.WriteLine(ineuron[x].getWeight(y));
                     }
 				}
 				for(int x=0;x<hneuron.Length;x++)//saving the wieghts of the hidden layer
@@ -249,14 +263,11 @@ namespace CharacterRecognitionBP.Common
 		{
 			using (StreamReader sr = new StreamReader(path)) 
 			{
-                for (int x=0;x< _inputDimensionSize; x++)//loading the weights of the input layer
+                for (int x=0;x< ineuron.Length; x++)//loading the weights of the input layer
 				{
-                    for (int y = 0; y < _inputDimensionSize; y++)
+                    for (int y = 0; y < hneuron.Length; y++)
                     {
-                        for (int z = 0; z < hneuron.Length; z++)
-                        {
-                            ineuron[x,y].setWeight(z, Convert.ToDouble(sr.ReadLine()));
-                        }
+                        ineuron[x].setWeight(y, Convert.ToDouble(sr.ReadLine()));
                     }
 				}
 				for(int x=0;x<hneuron.Length;x++)//loading the wieghts of the hidden layer
