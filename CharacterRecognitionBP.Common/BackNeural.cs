@@ -221,7 +221,7 @@ namespace CharacterRecognitionBP.Common
                 }
                 else
                 {
-                    if (oneuron[x].getOActivation() <= 0.5)
+                    if (oneuron[x].getOActivation() <= 0.009)
                     {
                         sum++;
                     }

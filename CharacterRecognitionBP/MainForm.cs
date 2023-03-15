@@ -195,7 +195,7 @@ namespace CharacterRecognitionBP
                     epochsWithoutImprovement++;
                 }
 
-                if (epochsWithoutImprovement >= 2)
+                if (epochsWithoutImprovement >= 5)
                 {
                     _ctsAuto!.Cancel();
                     break;
@@ -204,8 +204,7 @@ namespace CharacterRecognitionBP
                 dataSetsFeed.Invoke(new Action(() =>
                 {
                     epochsLabel.Text = $"Epochs: {countEpoch}";
-                    //dataSetsFeed.Items.Add($"Img: {Path.GetFileNameWithoutExtension(images[j])}   T: {Math.Abs(NN.getTotalError())}");
-                    dataSetsFeed.Items.Add($"Epoch {countEpoch}/{epochsInput.Text}\tloss: {NN.getCrossEntropyLoss()}\taccuracy: {NN.getAccuracy()}");
+                    dataSetsFeed.Items.Add($"Epoch {countEpoch}/{epochsInput.Text}\tloss: {totalLoss:f4}\taccuracy: {NN.getAccuracy():f2}");
                     dataSetsFeed.SelectedIndex = dataSetsFeed.Items.Count - 1;
                 }));
 
