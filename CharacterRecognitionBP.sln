@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CharacterRecognitionBP.Inte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CharacterRecognitionBP.Core", "CharacterRecognitionBP.Core\CharacterRecognitionBP.Core.csproj", "{BB02FAA4-CEC0-455F-82CE-56D31F7E6E43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterRecognition", "CharacterRecognition\CharacterRecognition.csproj", "{89A4CA78-BEAB-4E32-8A78-5E7E316C61D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CharacterRecognition", "CharacterRecognition\CharacterRecognition.csproj", "{89A4CA78-BEAB-4E32-8A78-5E7E316C61D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

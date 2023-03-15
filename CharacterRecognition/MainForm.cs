@@ -81,6 +81,7 @@ namespace CharacterRecognition
             _x = -1;
             _y = -1;
             canvasContainer.Cursor = Cursors.Default;
+            ProcessImage();
         }
 
         private void clearBtn_Click(object sender, EventArgs e)

@@ -52,7 +52,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(294, 43);
+            this.label1.Location = new System.Drawing.Point(278, 54);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(120, 15);
             this.label1.TabIndex = 2;
@@ -62,11 +62,11 @@
             // 
             this.outputLabel.AutoSize = true;
             this.outputLabel.Font = new System.Drawing.Font("Segoe UI", 28F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.outputLabel.Location = new System.Drawing.Point(294, 68);
+            this.outputLabel.Location = new System.Drawing.Point(268, 69);
             this.outputLabel.Name = "outputLabel";
-            this.outputLabel.Size = new System.Drawing.Size(84, 51);
+            this.outputLabel.Size = new System.Drawing.Size(124, 51);
             this.outputLabel.TabIndex = 3;
-            this.outputLabel.Text = "test";
+            this.outputLabel.Text = "Magic";
             // 
             // drawingArea
             // 
